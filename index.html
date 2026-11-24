@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMBER — IB Biology Study Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f6f1;
+    --surface: #ffffff;
+    --surface-subtle: #f2efe9;
+    --border: #e5e0d5;
+    --text: #1c2421;
+    --muted: #5f6c66;
+    --accent: #184e3b;
+    --accent-hover: #11382a;
+    --accent-soft: #e6f0ec;
+    --gold: #b87a1e;
+    --gold-soft: #fbf3e4;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    --font-serif: 'Newsreader', Georgia, serif;
+    --base-size: 15.5px;
+  }
+
+  [data-theme="dark"] {
+    --bg: #121615;
+    --surface: #1a201e;
+    --surface-subtle: #222927;
+    --border: #2e3835;
+    --text: #eceae4;
+    --muted: #9aa6a0;
+    --accent: #4aa884;
+    --accent-hover: #5ec29b;
+    --accent-soft: #1d332b;
+    --gold: #e0a64b;
+    --gold-soft: #2e2618;
+  }
+
+  [data-theme="light-modern"] {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --surface-subtle: #f4f4f5;
+    --border: #e4e4e7;
+    --text: #18181b;
+    --muted: #71717a;
+    --accent: #0f172a;
+    --accent-hover: #334155;
+    --accent-soft: #f1f5f9;
+    --gold: #b45309;
+    --gold-soft: #fef3c7;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: var(--base-size);
+    line-height: 1.65;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  /* Top Navigation Bar */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(248, 246, 241, 0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  [data-theme="dark"] header { background: rgba(18, 22, 21, 0.88); }
+  [data-theme="light-modern"] header { background: rgba(250, 250, 250, 0.88); }
+
+  .nav-wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .brand-logo {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--accent);
+  }
+  .brand-tag {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .icon-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 13px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+  .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .icon-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* Customize Drawer */
+  .studio-drawer {
+    display: none;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 24px;
+  }
+  .studio-drawer.open { display: block; }
+  .drawer-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    cursor: pointer;
+  }
+
+  /* Main Container */
+  main {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* Dashboard Home View */
+  .hero-editorial {
+    margin-bottom: 36px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-kicker {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .hero-editorial h1 {
+    font-family: var(--font-serif);
+    font-size: 38px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin: 0 0 10px 0;
+    letter-spacing: -0.6px;
+  }
+  .hero-editorial p {
+    margin: 0;
+    color: var(--muted);
+    max-width: 640px;
+    font-size: 15px;
+  }
+
+  .section-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .section-bar h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 18px;
+  }
+  .mod-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .mod-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+  }
+  .mod-code {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 3px 9px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  .mod-card h3 {
+    font-family: var(--font-serif);
+    font-size: 21px;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+  }
+  .mod-meta {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .progress-bar-bg {
+    height: 5px;
+    background: var(--surface-subtle);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.3s;
+  }
+
+  /* Study Workspace View */
+  .crumb-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .back-link {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+  }
+  .back-link:hover { color: var(--accent); }
+
+  .stage-nav {
+    display: flex;
+    gap: 6px;
+    background: var(--surface-subtle);
+    padding: 5px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+  .stage-pill {
+    flex: 1;
+    min-width: 120px;
+    background: transparent;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .stage-pill.active {
+    background: var(--surface);
+    color: var(--accent);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .paper-sheet {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px 36px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  }
+  .sheet-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 18px;
+    margin-bottom: 24px;
+  }
+  .sheet-header h2 {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    font-weight: 500;
+    margin: 4px 0 6px 0;
+  }
+
+  /* Ready Room Editorial Layout */
+  .concept-block {
+    margin-bottom: 26px;
+  }
+  .concept-block h3 {
+    font-size: 16.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 0 0 8px 0;
+  }
+  .concept-block ul {
+    margin: 6px 0;
+    padding-left: 20px;
+  }
+  .concept-block li { margin-bottom: 6px; }
+  .kw { font-weight: 700; color: var(--text); background: var(--gold-soft); padding: 0 4px; border-radius: 3px; }
+
+  .diagram-slot {
+    background: var(--surface-subtle);
+    border: 1.5px dashed var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    margin: 22px 0;
+  }
+  .diagram-slot img {
+    max-width: 100%;
+    max-height: 340px;
+    border-radius: 8px;
+    display: none;
+    margin: 0 auto 10px;
+  }
+
+  /* Work Deck Cloze */
+  .cloze-card {
+    background: var(--surface-subtle);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    font-size: 17px;
+    line-height: 1.95;
+    margin: 18px 0;
+  }
+  .hl { background: #fde68a; color: #1c1917; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+  .ul { border-bottom: 2px solid var(--gold); font-weight: 600; }
+  .cloze-in {
+    border: none;
+    border-bottom: 2px solid var(--accent);
+    background: var(--surface);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 15.5px;
+    font-weight: 600;
+    text-align: center;
+    padding: 2px 6px;
+    border-radius: 4px 4px 0 0;
+  }
+  .cloze-in.ok { border-color: #15803d; background: #dcfce7; color: #14532d; }
+  .cloze-in.bad { border-color: #b91c1c; background: #fee2e2; color: #7f1d1d; }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-outline {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Catapult & Quiz Options */
+  .chain-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    background: var(--gold-soft);
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 13px;
+  }
+  .chain-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+  .choice-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-family: inherit;
+    font-size: 14.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:hover { border-color: var(--accent); background: var(--surface-subtle); }
+  .choice-btn.correct { border-color: #15803d; background: #dcfce7; color: #14532d; font-weight: 600; }
+  .choice-btn.wrong { border-color: #b91c1c; background: #fee2e2; color: #7f1d1d; }
+
+  /* Flight Deck Subtabs */
+  .subtab-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .subtab-btn {
+    padding: 7px 14px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--surface-subtle);
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .subtab-btn.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  table.ib-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13.5px;
+  }
+  table.ib-table th, table.ib-table td {
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    text-align: left;
+  }
+  table.ib-table th { background: var(--surface-subtle); }
+
+  textarea.ib-area {
+    width: 100%;
+    min-height: 110px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  .ms-panel {
+    display: none;
+    background: var(--accent-soft);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 10px;
+    font-size: 13.5px;
+  }
+
+  /* Modal for Adding Custom Card */
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 60;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    max-width: 520px;
+    width: 100%;
+    padding: 24px;
+  }
+  .modal-card input, .modal-card textarea {
+    width: 100%;
+    padding: 9px 12px;
+    margin: 6px 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: inherit;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <div class="brand" onclick="showDashboard()">
+      <span class="brand-logo">EMBER</span>
+      <span class="brand-tag">IB Biology Studio</span>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn" onclick="openCardModal()">+ Add Cloze Card</button>
+      <button class="icon-btn" id="btnCustomize" onclick="toggleDrawer()">Customize Appearance</button>
+    </div>
+  </div>
+  <div class="studio-drawer" id="studioDrawer">
+    <div class="drawer-inner">
+      <div class="control-group">
+        <span>Paper Theme:</span>
+        <button class="swatch" style="background:#f8f6f1" title="Warm Paper (C)" onclick="setTheme('')"></button>
+        <button class="swatch" style="background:#ffffff" title="Clean White" onclick="setTheme('light-modern')"></button>
+        <button class="swatch" style="background:#121615" title="Deep Forest Dark" onclick="setTheme('dark')"></button>
+      </div>
+      <div class="control-group">
+        <span>Font Size:</span>
+        <button class="btn-outline" onclick="setFontSize('14.5px')">Compact</button>
+        <button class="btn-outline" onclick="setFontSize('15.5px')">Default</button>
+        <button class="btn-outline" onclick="setFontSize('17px')">Large</button>
+      </div>
+      <div class="control-group">
+        <button class="btn-outline" onclick="exportBackup()">Export My Data (JSON)</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- DASHBOARD VIEW -->
+  <div id="view-dashboard">
+    <div class="hero-editorial">
+      <div class="hero-kicker">Oxford IB Biology Course Companion</div>
+      <h1>Structured Mastery for SL &amp; HL Biology</h1>
+      <p>Move from verbatim textbook concepts to active cloze recall, causal chains, and Paper 1A, 1B &amp; 2 exam practice.</p>
+    </div>
+
+    <div class="section-bar">
+      <h2>Theme A &middot; Unity and Diversity</h2>
+      <span style="font-size:12.5px; color:var(--muted);">Click a module to enter studio</span>
+    </div>
+
+    <div class="module-grid">
+      <div class="mod-card" onclick="openModule('A1.1.6')">
+        <div>
+          <span class="mod-code">A1.1.6 &middot; SL / HL</span>
+          <h3>Physical properties of water &amp; aquatic habitats</h3>
+          <div class="mod-meta">Oxford pp. 11–12 &middot; Buoyancy, viscosity, thermal conductivity, specific heat</div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:5px;">
+            <span>Mastery Progress</span>
+            <span id="dashProgText">0%</span>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" id="dashProgBar" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="mod-card" style="opacity:0.65; cursor:default;">
+        <div>
+          <span class="mod-code">A1.1.1 – A1.1.2</span>
+          <h3>Water as medium for life &amp; hydrogen bonds</h3>
+          <div class="mod-meta">Oxford pp. 4–5 &middot; Ready to add next</div>
+        </div>
+        <div style="font-size:12px; color:var(--muted);">Send PDF section to unlock</div>
+      </div>
+
+      <div class="mod-card" style="opacity:0.65; cursor:default;">
+        <div>
+          <span class="mod-code">A1.1.3 – A1.1.5</span>
+          <h3>Cohesion, adhesion &amp; solvent properties</h3>
+          <div class="mod-meta">Oxford pp. 5–11 &middot; Ready to add next</div>
+        </div>
+        <div style="font-size:12px; color:var(--muted);">Send PDF section to unlock</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKSPACE VIEW -->
+  <div id="view-workspace" style="display:none;">
+    <div class="crumb-row">
+      <button class="back-link" onclick="showDashboard()">&larr; Back to All Chapters</button>
+      <div style="font-size:13px; color:var(--muted);">Module: <strong style="color:var(--text);">A1.1.6 Physical properties of water</strong></div>
+    </div>
+
+    <div class="stage-nav">
+      <button class="stage-pill active" onclick="setStage(0)">1. Ready Room</button>
+      <button class="stage-pill" onclick="setStage(1)">2. Work Deck (<span id="wdCountBadge">0</span>)</button>
+      <button class="stage-pill" onclick="setStage(2)">3. Catapult</button>
+      <button class="stage-pill" onclick="setStage(3)">4. Flight Deck (1A/1B/2)</button>
+      <button class="stage-pill" onclick="setStage(4)">5. Debrief</button>
+    </div>
+
+    <!-- STAGE 0: READY ROOM -->
+    <div id="ws-0" class="paper-sheet">
+      <div class="sheet-header">
+        <div class="hero-kicker">Ready Room &middot; Oxford Biology pp. 11–12</div>
+        <h2>Physical properties of water and consequences for aquatic animals</h2>
+        <p style="margin:0; font-size:13.5px; color:var(--muted);">Verbatim textbook sentences structured for clear reading.</p>
+      </div>
+
+      <div class="concept-block">
+        <p>A <span class="kw">physical property</span> is a characteristic of a material that can be observed or measured without changing its chemical structure. Water has some distinctive physical properties, with major consequences for living organisms.</p>
+      </div>
+
+      <div class="concept-block">
+        <h3>Buoyancy</h3>
+        <p>When an object is immersed in a fluid, the fluid exerts an upward force on the object. This force is equal to the weight of the fluid displaced by the object. It is called <span class="kw">buoyancy</span>.</p>
+        <ul>
+          <li>If the <span class="kw">density</span> of the object is lower than the density of the fluid, the force acting on the object due to buoyancy will be greater than the force due to gravity and the object will <span class="kw">float</span>. If higher, it will <span class="kw">sink</span>.</li>
+          <li>The densities of living tissues are quite variable—for example, <span class="kw">bone</span> is denser than water while <span class="kw">lung tissue</span> and <span class="kw">adipose tissue</span> for fat storage are both less dense than water. However, living organisms have an overall density close to that of water, so they do not need to use much energy to float at a particular depth.</li>
+          <li><span class="kw">Bony fish</span> have an air-filled <span class="kw">swim bladder</span> which they use to control their overall density. <span class="kw">Cyanobacteria</span> have <span class="kw">gas vesicles</span> which they use to adjust how close to the surface they float.</li>
+          <li><span class="kw">Air</span> is much less dense than living organisms and provides negligible amounts of buoyancy. Organisms therefore have to generate lift to stay airborne.</li>
+        </ul>
+      </div>
+
+      <div class="concept-block">
+        <h3>Viscosity</h3>
+        <p>In simple terms, <span class="kw">viscosity</span> is the stickiness of a fluid which determines how easily it can flow. Organic solvents such as propanone have low viscosity, whereas treacle has high viscosity.</p>
+        <ul>
+          <li>Viscosity is due to <span class="kw">internal friction</span> caused when one part of a fluid moves relative to another part. The more viscous a fluid, the greater the friction and the resistance to flow.</li>
+          <li>Pure water has a higher viscosity than organic solvents, because <span class="kw">hydrogen bonds</span> cause internal friction.</li>
+          <li>Solutes increase the viscosity even further, so <span class="kw">blood</span> does not flow as easily as water. <span class="kw">Seawater</span> has a higher viscosity than <span class="kw">freshwater</span> because of the dissolved salts.</li>
+          <li>The viscosity of <span class="kw">air</span> is about <span class="kw">50 times smaller</span> than that of water at the same temperature.</li>
+        </ul>
+      </div>
+
+      <div class="concept-block">
+        <h3>Thermal conductivity</h3>
+        <p>The rate at which heat passes through a material is known as <span class="kw">thermal conductivity</span>.</p>
+        <ul>
+          <li>Water has a <span class="kw">relatively high thermal conductivity</span>. Fats and oils conduct heat about <span class="kw">25%</span> as quickly as water, and air <span class="kw">5%</span>. These materials are therefore useful as <span class="kw">heat insulators</span>.</li>
+          <li>Aquatic warm-blooded animals are at much greater risk of the loss of body heat than land-based warm-blooded animals.</li>
+          <li>The high water content of <span class="kw">blood</span> allows it to carry heat from parts of the body where it is generated (such as contracting muscles) to parts that need more heat or parts that are able to dissipate excess heat to the environment.</li>
+        </ul>
+      </div>
+
+      <div class="concept-block">
+        <h3>Specific heat</h3>
+        <p>The heat required to raise the temperature of <span class="kw">1 g</span> of a material by <span class="kw">1 &deg;C (or kelvin, K)</span> is its <span class="kw">specific heat capacity</span>. Water is <span class="kw">4.18 J g<sup>&minus;1</sup> K<sup>&minus;1</sup></span>; air is only <span class="kw">1.01 J g<sup>&minus;1</sup> K<sup>&minus;1</sup></span>.</p>
+        <ul>
+          <li>Water has a relatively high specific heat capacity because <span class="kw">hydrogen bonds</span> restrict molecular motion. For the temperature of water to increase, hydrogen bonds must be broken and energy is needed to do this.</li>
+          <li>As a result, <span class="kw">aquatic habitats are more thermally stable than terrestrial habitats</span>, and birds and mammals (mostly composed of water) maintain constant body temperatures more easily.</li>
+        </ul>
+      </div>
+
+      <div class="concept-block">
+        <h3>Case Comparison: Black-throated loon vs. Ringed seal</h3>
+        <div class="diagram-slot">
+          <img id="figImg" alt="Textbook Diagram">
+          <div id="figPrompt" style="font-size:13.5px; color:var(--muted); margin-bottom:8px;">
+            <strong>Textbook Figures 15 &amp; 16 (Page 12):</strong> Black-throated loon (<em>Gavia arctica</em>) &amp; Ringed seal (<em>Pusa hispida</em>)
+          </div>
+          <input type="file" id="figInput" accept="image/*" style="display:none" onchange="uploadFig(event)">
+          <button class="btn-outline" onclick="document.getElementById('figInput').click()">Upload Textbook Diagram Screenshot</button>
+        </div>
+        <ul>
+          <li><strong>Buoyancy:</strong> Air provides far less buoyant force, so the <span class="kw">loon</span> must expend more energy to stay aloft than the <span class="kw">ringed seal</span> floating in water.</li>
+          <li><strong>Drag:</strong> Water is more viscous, creating about <span class="kw">800 times more drag</span> on a body moving through water than through air at the same velocity, so the <span class="kw">seal</span> uses more energy to move through it.</li>
+          <li><strong>Heat transfer vs. stability:</strong> Water conducts heat away faster (easier for the loon in air to stay warmer than its surroundings), while water's higher specific heat capacity gives the seal a <span class="kw">more stable thermal environment</span>.</li>
+        </ul>
+      </div>
+
+      <div style="text-align:right;">
+        <button class="btn-primary" onclick="setStage(1)">Continue to Work Deck &rarr;</button>
+      </div>
+    </div>
+
+    <!-- STAGE 1: WORK DECK -->
+    <div id="ws-1" class="paper-sheet" style="display:none;">
+      <div class="sheet-header">
+        <div class="hero-kicker">Work Deck &middot; Progressive Cloze Recall</div>
+        <h2 id="wdCardTitle">Card Title</h2>
+        <p style="margin:0; font-size:13.5px; color:var(--muted);">
+          <span class="hl">Highlighted</span> terms hide in Check 1. Both <span class="hl">highlighted</span> and <span class="ul">underlined</span> terms hide in Check 2.
+        </p>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+        <button class="btn-outline" onclick="stepWD(-1)">&larr; Prev</button>
+        <select id="wdDropdown" style="flex:1; padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; font-weight:600;" onchange="jumpWD(this.value)"></select>
+        <button class="btn-outline" onclick="stepWD(1)">Next &rarr;</button>
+      </div>
+
+      <div class="cloze-card" id="wdBody"></div>
+      <div id="wdMsg" style="font-size:13.5px; font-weight:600; margin-bottom:14px;"></div>
+
+      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn-outline" onclick="setWDMode(0)">Full Sentence</button>
+          <button class="btn-outline" onclick="setWDMode(1)">Check 1 (Highlighted)</button>
+          <button class="btn-outline" onclick="setWDMode(2)">Check 2 (All Key Terms)</button>
+        </div>
+        <button class="btn-primary" id="wdVerifyBtn" style="display:none;" onclick="checkWD()">Verify Answers</button>
+      </div>
+    </div>
+
+    <!-- STAGE 2: CATAPULT -->
+    <div id="ws-2" class="paper-sheet" style="display:none;">
+      <div class="sheet-header">
+        <div class="hero-kicker">Catapult &middot; Causal Mechanism Chain</div>
+        <h2>Connect Molecular Structure to Aquatic Adaptations</h2>
+      </div>
+
+      <div class="chain-strip" id="catChain"></div>
+      <div id="catStepInfo" style="font-size:12.5px; font-weight:700; color:var(--gold); margin-bottom:6px;"></div>
+      <h3 id="catQ" style="margin:0 0 16px 0; font-size:18px;"></h3>
+      <div id="catOpts"></div>
+      <div id="catMsg" style="font-size:13.5px; font-weight:600; margin:12px 0;"></div>
+      <div style="display:flex; justify-content:space-between; margin-top:16px;">
+        <button class="btn-outline" onclick="resetCat()">Reset Chain</button>
+        <button class="btn-primary" id="catNext" style="display:none;" onclick="advanceCat()">Next Link &rarr;</button>
+      </div>
+    </div>
+
+    <!-- STAGE 3: FLIGHT DECK -->
+    <div id="ws-3" class="paper-sheet" style="display:none;">
+      <div class="sheet-header">
+        <div class="hero-kicker">Flight Deck &middot; IB Exam Simulation</div>
+        <h2>Paper 1A, Paper 1B &amp; Paper 2 Practice</h2>
+      </div>
+
+      <div class="subtab-row">
+        <button class="subtab-btn active" onclick="setPaperTab('1a', this)">Paper 1A (MCQ)</button>
+        <button class="subtab-btn" onclick="setPaperTab('1b', this)">Paper 1B (Data-Based)</button>
+        <button class="subtab-btn" onclick="setPaperTab('2', this)">Paper 2 (Extended Response)</button>
+      </div>
+
+      <div id="pane-1a"></div>
+
+      <div id="pane-1b" style="display:none;">
+        <table class="ib-table">
+          <thead>
+            <tr><th>Property</th><th>Water</th><th>Air</th><th>Textbook Comparison (pp. 11–12)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Buoyancy</strong></td><td>Supports organisms (density close to water)</td><td>Negligible buoyancy</td><td>Birds must generate lift to stay airborne</td></tr>
+            <tr><td><strong>Viscosity</strong></td><td>Higher (increased by solutes)</td><td>~50&times; smaller than water</td><td>~800&times; more drag in water at same velocity</td></tr>
+            <tr><td><strong>Thermal Conductivity</strong></td><td>High (100% baseline)</td><td>5% as quickly as water</td><td>Fats/oils conduct heat ~25% as quickly as water</td></tr>
+            <tr><td><strong>Specific Heat Capacity</strong></td><td>4.18 J g<sup>&minus;1</sup> K<sup>&minus;1</sup></td><td>1.01 J g<sup>&minus;1</sup> K<sup>&minus;1</sup></td><td>Water resists temperature change</td></tr>
+          </tbody>
+        </table>
+        <p><strong>1. Calculate</strong> the heat energy required to raise 50 g of water by 2 K compared with 50 g of air by 2 K. <strong>[2]</strong></p>
+        <textarea class="ib-area" placeholder="Show calculation..."></textarea>
+        <button class="btn-outline" style="margin-top:8px;" onclick="toggleEl('ms1')">Toggle Markscheme</button>
+        <div class="ms-panel" id="ms1">Water: 50 &times; 4.18 &times; 2 = <strong>418 J</strong> [1]; Air: 50 &times; 1.01 &times; 2 = <strong>101 J</strong> [1].</div>
+
+        <p style="margin-top:20px;"><strong>2. Compare and contrast</strong> energy expenditure for movement and heat balance in a flying loon versus a submerged ringed seal. <strong>[3]</strong></p>
+        <textarea class="ib-area" placeholder="Write response..."></textarea>
+        <button class="btn-outline" style="margin-top:8px;" onclick="toggleEl('ms2')">Toggle Markscheme</button>
+        <div class="ms-panel" id="ms2">
+          &bull; <strong>Support:</strong> Loon expends more energy staying aloft (low air buoyancy) vs. seal supported by water [1].<br>
+          &bull; <strong>Locomotion:</strong> Seal uses more energy moving through water (~800&times; greater drag due to higher viscosity) [1].<br>
+          &bull; <strong>Thermal:</strong> Seal loses heat faster (high water thermal conductivity), though water temperature is more stable (high specific heat capacity) [1].
+        </div>
+      </div>
+
+      <div id="pane-2" style="display:none;">
+        <p style="font-weight:600; background:var(--surface-subtle); padding:14px; border-radius:8px;">
+          Explain how the physical properties of water affect animals living in aquatic habitats, making reference to hydrogen bonding where relevant. <strong>[6]</strong>
+        </p>
+        <textarea class="ib-area" style="min-height:150px;" placeholder="Write your Paper 2 extended response..."></textarea>
+        <button class="btn-primary" style="margin-top:10px;" onclick="toggleEl('msp2')">Show Markscheme &amp; Self-Grade</button>
+        <div class="ms-panel" id="msp2">
+          <strong>Markscheme (1 mark per point, max 6):</strong><br>
+          <label style="display:block; margin-top:6px;"><input type="checkbox" class="p2-box" onchange="scoreP2()"> Overall density close to water provides buoyancy, minimizing energy needed to float.</label>
+          <label style="display:block;"><input type="checkbox" class="p2-box" onchange="scoreP2()"> Hydrogen bonds cause internal friction &rarr; high viscosity (~50&times; air) and ~800&times; more drag.</label>
+          <label style="display:block;"><input type="checkbox" class="p2-box" onchange="scoreP2()"> Dissolved salts in seawater further increase viscosity compared to freshwater.</label>
+          <label style="display:block;"><input type="checkbox" class="p2-box" onchange="scoreP2()"> High thermal conductivity conducts heat away rapidly from warm-blooded animals.</label>
+          <label style="display:block;"><input type="checkbox" class="p2-box" onchange="scoreP2()"> Adipose tissue / blubber has low thermal conductivity (~25% of water) for insulation and aids buoyancy.</label>
+          <label style="display:block;"><input type="checkbox" class="p2-box" onchange="scoreP2()"> High specific heat capacity (4.18 J g<sup>&minus;1</sup> K<sup>&minus;1</sup>) as energy is needed to break H-bonds, stabilizing aquatic temperatures.</label>
+          <div style="margin-top:8px; font-weight:700;" id="p2ScoreLbl">Score: 0 / 6</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAGE 4: DEBRIEF -->
+    <div id="ws-4" class="paper-sheet" style="display:none;">
+      <div class="sheet-header">
+        <div class="hero-kicker">Debrief &middot; Session Analytics</div>
+        <h2>A1.1.6 Mastery Summary</h2>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:14px;">
+        <div style="background:var(--surface-subtle); padding:18px; border-radius:10px; text-align:center;">
+          <div style="font-size:26px; font-weight:700; color:var(--accent);" id="sumWD">0/8</div>
+          <div style="font-size:13px; color:var(--muted);">Work Deck Mastered</div>
+        </div>
+        <div style="background:var(--surface-subtle); padding:18px; border-radius:10px; text-align:center;">
+          <div style="font-size:26px; font-weight:700; color:var(--accent);" id="sumCat">0/5</div>
+          <div style="font-size:13px; color:var(--muted);">Catapult Links</div>
+        </div>
+        <div style="background:var(--surface-subtle); padding:18px; border-radius:10px; text-align:center;">
+          <div style="font-size:26px; font-weight:700; color:var(--accent);" id="sumMCQ">0/4</div>
+          <div style="font-size:13px; color:var(--muted);">Paper 1A MCQs</div>
+        </div>
+        <div style="background:var(--surface-subtle); padding:18px; border-radius:10px; text-align:center;">
+          <div style="font-size:26px; font-weight:700; color:var(--accent);" id="sumP2">0/6</div>
+          <div style="font-size:13px; color:var(--muted);">Paper 2 Self-Score</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- CUSTOM CARD MODAL -->
+<div class="modal-backdrop" id="cardModal">
+  <div class="modal-card">
+    <h3 style="margin-top:0; font-family:var(--font-serif);">Add Custom Work Deck Card</h3>
+    <label style="font-size:13px; font-weight:600;">Card Title</label>
+    <input id="newCardTitle" placeholder="e.g., 9. Swim bladder in bony fish">
+    <label style="font-size:13px; font-weight:600;">Sentence (Wrap key terms in *asterisks* for Check 1, _underscores_ for Check 2)</label>
+    <textarea id="newCardText" rows="3" placeholder="Bony fish have an air-filled *swim bladder* which they use to control their _overall density_."></textarea>
+    <div style="display:flex; justify-content:flex-end; gap:8px;">
+      <button class="btn-outline" onclick="closeCardModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveCustomCard()">Save to Work Deck</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const defaultCards = [
+    { title: "1. Definition: Physical property", parts: ["A ", {hl:"physical property"}, " is a characteristic of a material that can be ", {ul:"observed"}, " or ", {ul:"measured"}, " without changing its ", {hl:"chemical structure"}, "."] },
+    { title: "2. Definition: Buoyancy", parts: ["When an object is immersed in a fluid, the fluid exerts an ", {hl:"upward force"}, " equal to the ", {ul:"weight"}, " of the fluid ", {hl:"displaced"}, " by the object, called ", {hl:"buoyancy"}, "."] },
+    { title: "3. Condition: Floating vs. Sinking", parts: ["If the ", {hl:"density"}, " of the object is ", {hl:"lower"}, " than the fluid, buoyancy is ", {ul:"greater"}, " than gravity and the object will ", {hl:"float"}, "."] },
+    { title: "4. Adaptations: Swim bladder & gas vesicles", parts: ["Bony fish have an air-filled ", {hl:"swim bladder"}, " to control overall density, while cyanobacteria have ", {hl:"gas vesicles"}, " to adjust how close to the ", {ul:"surface"}, " they float."] },
+    { title: "5. Cause of Water's Viscosity", parts: ["Pure water has a higher ", {hl:"viscosity"}, " than organic solvents because ", {hl:"hydrogen bonds"}, " cause ", {ul:"internal friction"}, "."] },
+    { title: "6. Water vs. Air Drag", parts: ["The viscosity of air is about ", {hl:"50"}, " times smaller than water, and there is about ", {hl:"800"}, " times more ", {ul:"drag"}, " on a body moving through water than through air."] },
+    { title: "7. Thermal Conductivity Comparison", parts: ["Fats and oils conduct heat about ", {hl:"25%"}, " as quickly as water, and air ", {hl:"5%"}, ", making them useful as ", {ul:"heat insulators"}, "."] },
+    { title: "8. Specific Heat Capacity Mechanism", parts: ["Water's specific heat capacity is ", {hl:"4.18"}, " J g⁻¹ K⁻¹ because ", {hl:"hydrogen bonds"}, " must be ", {ul:"broken"}, " for temperature to increase."] }
+  ];
+
+  const catData = [
+    { q: "Step 1: What intermolecular force gives liquid water both high viscosity and high specific heat capacity?", node: "Hydrogen bonds", opts: ["Hydrogen bonds restricting motion & causing internal friction", "Ionic bonds between water molecules", "Non-polar covalent interactions"], ans: 0 },
+    { q: "Step 2: How does high specific heat capacity (4.18 J g⁻¹ K⁻¹) affect aquatic habitats?", node: "Thermally stable habitat", opts: ["Water warms and cools rapidly", "Large energy is required to break H-bonds, keeping water temperature stable", "Aquatic animals overheat easily"], ans: 1 },
+    { q: "Step 3: Compare supporting body weight in air (loon) vs. water (ringed seal).", node: "High buoyancy in water", opts: ["Air provides negligible buoyancy, so the loon expends more energy to stay aloft", "Water provides less buoyancy than air", "Both require identical energy to stay supported"], ans: 0 },
+    { q: "Step 4: Compare forward movement through water vs. air at the same velocity.", node: "~800× greater drag in water", opts: ["Water has lower viscosity than air", "Water creates ~800× more drag, so the seal expends more energy swimming", "Seawater has lower drag than freshwater"], ans: 1 },
+    { q: "Step 5: How does water's thermal conductivity affect the ringed seal, and how does it adapt?", node: "Blubber insulates (25% conductivity)", opts: ["Water conducts heat away rapidly; adipose tissue (blubber) insulates and adds buoyancy", "Air conducts heat faster than water", "Bone tissue insulates the seal"], ans: 0 }
+  ];
+
+  const mcqs = [
+    { q: "1. Why does seawater have a higher viscosity than freshwater?", opts: ["A. Fewer hydrogen bonds", "B. Dissolved salts increase internal friction", "C. Lower specific heat capacity", "D. Lower density"], ans: 1, exp: "Oxford p. 12: Solutes increase viscosity; seawater has higher viscosity than freshwater due to dissolved salts." },
+    { q: "2. Which tissue is less dense than water and aids buoyancy in mammals?", opts: ["A. Bone tissue", "B. Adipose tissue", "C. Cartilage", "D. Skeletal muscle"], ans: 1, exp: "Oxford p. 11: Bone is denser than water, while lung tissue and adipose tissue are less dense." },
+    { q: "3. How fast do fats and oils conduct heat compared with water?", opts: ["A. 5% as quickly", "B. 25% as quickly", "C. 50% as quickly", "D. 4.18 times faster"], ans: 1, exp: "Oxford p. 12: Fats and oils conduct heat about 25% as quickly as water, and air 5%." },
+    { q: "4. What is the specific heat capacity of water vs. air?", opts: ["A. 1.01 vs 4.18 J g⁻¹ K⁻¹", "B. 4.18 vs 1.01 J g⁻¹ K⁻¹", "C. 50 vs 800 J g⁻¹ K⁻¹", "D. 25 vs 5 J g⁻¹ K⁻¹"], ans: 1, exp: "Oxford p. 12: Water is 4.18 J g⁻¹ K⁻¹; air is 1.01 J g⁻¹ K⁻¹." }
+  ];
+
+  let app = JSON.parse(localStorage.getItem('emberBioState')) || {
+    theme: '',
+    fontSize: '15.5px',
+    customCards: [],
+    wdIdx: 0,
+    mastered: [],
+    catStep: 0,
+    mcqAns: {},
+    p2Score: 0,
+    figUrl: null
+  };
+
+  function allCards() { return [...defaultCards, ...app.customCards]; }
+  function save() {
+    localStorage.setItem('emberBioState', JSON.stringify(app));
+    updateProgress();
+  }
+
+  // Theme & Appearance
+  function setTheme(t) { app.theme = t; document.documentElement.setAttribute('data-theme', t); save(); }
+  function setFontSize(s) { app.fontSize = s; document.documentElement.style.setProperty('--base-size', s); save(); }
+  function toggleDrawer() {
+    document.getElementById('studioDrawer').classList.toggle('open');
+    document.getElementById('btnCustomize').classList.toggle('active');
+  }
+
+  // Views & Stages
+  function showDashboard() {
+    document.getElementById('view-dashboard').style.display = 'block';
+    document.getElementById('view-workspace').style.display = 'none';
+    updateProgress();
+  }
+  function openModule() {
+    document.getElementById('view-dashboard').style.display = 'none';
+    document.getElementById('view-workspace').style.display = 'block';
+    setStage(0);
+  }
+  function setStage(i) {
+    document.querySelectorAll('.stage-pill').forEach((p, idx) => p.classList.toggle('active', idx === i));
+    for (let k = 0; k < 5; k++) document.getElementById('ws-' + k).style.display = (k === i) ? 'block' : 'none';
+    if (i === 1) renderWD();
+    if (i === 2) renderCat();
+    if (i === 3) renderMCQ();
+    if (i === 4) renderDebrief();
+  }
+
+  // Diagram Upload
+  function uploadFig(e) {
+    const f = e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = ev => { app.figUrl = ev.target.result; applyFig(); save(); };
+    r.readAsDataURL(f);
+  }
+  function applyFig() {
+    if (app.figUrl) {
+      const img = document.getElementById('figImg');
+      img.src = app.figUrl;
+      img.style.display = 'block';
+      document.getElementById('figPrompt').style.display = 'none';
+    }
+  }
+
+  // Work Deck
+  let wdMode = 0;
+  function renderWD() {
+    const cards = allCards();
+    const sel = document.getElementById('wdDropdown');
+    sel.innerHTML = cards.map((c, i) => `<option value="${i}">${c.title}${app.mastered.includes(i) ? ' ✓' : ''}</option>`).join('');
+    sel.value = app.wdIdx;
+    const card = cards[app.wdIdx];
+    document.getElementById('wdCardTitle').textContent = card.title;
+    document.getElementById('wdMsg').textContent = '';
+
+    document.getElementById('wdBody').innerHTML = card.parts.map(p => {
+      if (typeof p === 'string') return p;
+      if (p.hl) {
+        if (wdMode === 0) return `<span class="hl">${p.hl}</span>`;
+        return `<input class="cloze-in" data-ans="${p.hl}" style="width:${Math.max(p.hl.length*10,75)}px" placeholder="...">`;
+      }
+      if (p.ul) {
+        if (wdMode < 2) return `<span class="ul">${p.ul}</span>`;
+        return `<input class="cloze-in" data-ans="${p.ul}" style="width:${Math.max(p.ul.length*10,75)}px" placeholder="...">`;
+      }
+    }).join('');
+    document.getElementById('wdVerifyBtn').style.display = wdMode > 0 ? 'inline-block' : 'none';
+  }
+  function setWDMode(m) { wdMode = m; renderWD(); }
+  function stepWD(d) {
+    const n = app.wdIdx + d;
+    if (n >= 0 && n < allCards().length) { app.wdIdx = n; wdMode = 0; renderWD(); save(); }
+  }
+  function jumpWD(v) { app.wdIdx = parseInt(v, 10); wdMode = 0; renderWD(); save(); }
+  function checkWD() {
+    const ins = document.querySelectorAll('.cloze-in');
+    let ok = true;
+    ins.forEach(i => {
+      if (i.value.trim().toLowerCase() === i.dataset.ans.toLowerCase()) { i.className = 'cloze-in ok'; }
+      else { i.className = 'cloze-in bad'; ok = false; }
+    });
+    const msg = document.getElementById('wdMsg');
+    if (ok) {
+      msg.style.color = '#15803d';
+      msg.textContent = 'Correct! Card marked as mastered.';
+      if (!app.mastered.includes(app.wdIdx)) { app.mastered.push(app.wdIdx); save(); }
+    } else {
+      msg.style.color = '#b91c1c';
+      msg.textContent = 'Check highlighted red fields and try again.';
+    }
+  }
+
+  // Custom Card Modal
+  function openCardModal() { document.getElementById('cardModal').classList.add('open'); }
+  function closeCardModal() { document.getElementById('cardModal').classList.remove('open'); }
+  function saveCustomCard() {
+    const title = document.getElementById('newCardTitle').value.trim();
+    const raw = document.getElementById('newCardText').value.trim();
+    if (!title || !raw) return;
+    const parts = [];
+    const regex = /(\*[^*]+\*|_[^_]+_)/g;
+    let last = 0, m;
+    while ((m = regex.exec(raw)) !== null) {
+      if (m.index > last) parts.push(raw.slice(last, m.index));
+      const token = m[0];
+      if (token.startsWith('*')) parts.push({ hl: token.slice(1, -1) });
+      else parts.push({ ul: token.slice(1, -1) });
+      last = regex.lastIndex;
+    }
+    if (last < raw.length) parts.push(raw.slice(last));
+    app.customCards.push({ title, parts });
+    save();
+    closeCardModal();
+    openModule();
+    setStage(1);
+    jumpWD(allCards().length - 1);
+  }
+
+  // Catapult
+  function renderCat() {
+    const s = app.catStep;
+    let chain = `<span class="chain-pill">Water properties</span>`;
+    for (let i = 0; i < s; i++) chain += ` &rarr; <span class="chain-pill">${catData[i].node}</span>`;
+    document.getElementById('catChain').innerHTML = chain;
+    document.getElementById('catMsg').textContent = '';
+    document.getElementById('catNext').style.display = 'none';
+    if (s >= catData.length) {
+      document.getElementById('catStepInfo').textContent = 'CHAIN COMPLETE';
+      document.getElementById('catQ').textContent = 'You linked hydrogen bonding to aquatic animal physiology.';
+      document.getElementById('catOpts').innerHTML = '';
+      return;
+    }
+    const cur = catData[s];
+    document.getElementById('catStepInfo').textContent = `STEP ${s + 1} OF ${catData.length}`;
+    document.getElementById('catQ').textContent = cur.q;
+    document.getElementById('catOpts').innerHTML = cur.opts.map((o, i) => `<button class="choice-btn" onclick="pickCat(${i}, this)">${o}</button>`).join('');
+  }
+  function pickCat(i, btn) {
+    const cur = catData[app.catStep];
+    const msg = document.getElementById('catMsg');
+    if (i === cur.ans) {
+      btn.classList.add('correct');
+      msg.style.color = '#15803d';
+      msg.textContent = 'Correct link!';
+      document.getElementById('catNext').style.display = 'inline-block';
+      document.querySelectorAll('#catOpts .choice-btn').forEach(b => b.disabled = true);
+    } else {
+      btn.classList.add('wrong');
+      msg.style.color = '#b91c1c';
+      msg.textContent = 'Incorrect — review Ready Room and try again.';
+    }
+  }
+  function advanceCat() { app.catStep++; save(); renderCat(); }
+  function resetCat() { app.catStep = 0; save(); renderCat(); }
+
+  // Flight Deck
+  function setPaperTab(p, btn) {
+    ['1a','1b','2'].forEach(k => document.getElementById('pane-' + k).style.display = (k === p) ? 'block' : 'none');
+    document.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  function renderMCQ() {
+    document.getElementById('pane-1a').innerHTML = mcqs.map((m, qi) => {
+      const picked = app.mcqAns[qi];
+      return `<div style="margin-bottom:20px;">
+        <p style="font-weight:600;">${m.q}</p>
+        ${m.opts.map((o, oi) => {
+          let cls = 'choice-btn';
+          if (picked !== undefined) {
+            if (oi === m.ans) cls += ' correct';
+            else if (oi === picked) cls += ' wrong';
+          }
+          return `<button class="${cls}" onclick="ansMCQ(${qi},${oi})">${o}</button>`;
+        }).join('')}
+        ${picked !== undefined ? `<div style="font-size:13px; color:var(--muted); margin-top:6px;">${m.exp}</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+  function ansMCQ(qi, oi) { app.mcqAns[qi] = oi; save(); renderMCQ(); }
+  function toggleEl(id) {
+    const el = document.getElementById(id);
+    el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+  }
+  function scoreP2() {
+    app.p2Score = document.querySelectorAll('.p2-box:checked').length;
+    document.getElementById('p2ScoreLbl').textContent = `Score: ${app.p2Score} / 6`;
+    save();
+  }
+
+  // Debrief & Progress
+  function updateProgress() {
+    const totalCards = allCards().length;
+    document.getElementById('wdCountBadge').textContent = `${app.mastered.length}/${totalCards}`;
+    const pct = Math.round(((app.mastered.length / totalCards) + (app.catStep / catData.length)) * 50);
+    document.getElementById('dashProgText').textContent = pct + '%';
+    document.getElementById('dashProgBar').style.width = pct + '%';
+  }
+  function renderDebrief() {
+    const totalCards = allCards().length;
+    document.getElementById('sumWD').textContent = `${app.mastered.length}/${totalCards}`;
+    document.getElementById('sumCat').textContent = `${app.catStep}/${catData.length}`;
+    let right = 0; mcqs.forEach((m, i) => { if (app.mcqAns[i] === m.ans) right++; });
+    document.getElementById('sumMCQ').textContent = `${right}/${mcqs.length}`;
+    document.getElementById('sumP2').textContent = `${app.p2Score}/6`;
+  }
+  function exportBackup() {
+    const blob = new Blob([JSON.stringify(app, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ember-ib-bio-backup.json';
+    a.click();
+  }
+
+  // Init
+  setTheme(app.theme);
+  setFontSize(app.fontSize);
+  applyFig();
+  updateProgress();
+</script>
+</body>
+</html>
